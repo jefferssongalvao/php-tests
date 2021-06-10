@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpTest\tests\Service;
+namespace PhpTest;
 
 use PhpTest\Model\Auction;
 use PhpTest\Model\AuctionBid;
@@ -9,52 +9,84 @@ use PhpTest\Service\Evaluator;
 use PHPUnit\Framework\TestCase;
 
 class EvaluatorTest extends TestCase
-{
-    public function testHighestValueInAscOrder(): void
+{    
+    private Evaluator $evaluator;
+    protected function setUp(): void
     {
-        $auction = new Auction("Leilão de Teste");
-        $auction->receiveAuctionBid(new AuctionBid(new User("Maria"), 2000));
-        $auction->receiveAuctionBid(new AuctionBid(new User("Maria"), 2500));
-
-        $evaluator = new Evaluator();
-        $evaluator->evaluate($auction);
-
-        self::assertEquals(2500, $evaluator->getHighestValue());
+        $this->evaluator = new Evaluator();
     }
 
-    public function testHighestValueInDescOrder(): void
+    /**
+     * @dataProvider getAuctions
+     */
+    public function testHighestValueInAuction(Auction $auction): void
     {
-        $auction = new Auction("Leilão de Teste");
-        $auction->receiveAuctionBid(new AuctionBid(new User("Maria"), 2500));
-        $auction->receiveAuctionBid(new AuctionBid(new User("Maria"), 2000));
+        $this->evaluator->evaluate($auction);
 
-        $evaluator = new Evaluator();
-        $evaluator->evaluate($auction);
+        self::assertEquals(3500, $this->evaluator->getHighestValue());
+    }
+    
+    /**
+     * @dataProvider getAuctions
+     */
+    public function testLowerValueInAuction(Auction $auction): void
+    {
+        $this->evaluator->evaluate($auction);
 
-        self::assertEquals(2500, $evaluator->getHighestValue());
+        self::assertEquals(1700, $this->evaluator->getLowerValue());
+    }
+    
+    /**
+     * @dataProvider getAuctions
+     */
+    public function testHighestAuctionBidsInAuction(Auction $auction): void
+    {
+        $this->evaluator->evaluate($auction);
+
+        $highestAuctionBids = $this->evaluator->getHighestAuctionBids();
+        self::assertIsArray($highestAuctionBids);
+        self::assertCount(3, $highestAuctionBids);
+        self::assertEquals(3500, $highestAuctionBids[0]->getValue());
+        self::assertEquals(2500, $highestAuctionBids[1]->getValue());
+        self::assertEquals(2000, $highestAuctionBids[2]->getValue());
     }
 
-    public function testLowerValueInAscOrder(): void
+    public function getAuctions(): array
     {
-        $auction = new Auction("Leilão de Teste");
-        $auction->receiveAuctionBid(new AuctionBid(new User("Maria"), 2000));
-        $auction->receiveAuctionBid(new AuctionBid(new User("Maria"), 2500));
-
-        $evaluator = new Evaluator();
-        $evaluator->evaluate($auction);
-
-        self::assertEquals(2000, $evaluator->getLowerValue());
+        return [
+            "ascendant-order" => $this->auctionAsc(),
+            "descendant-order" => $this->auctionDesc(),
+            "random-order" => $this->auctionRand()
+        ];
     }
 
-    public function testLowerValueInDescOrder(): void
+    private function auctionAsc(): array
+    {
+        $auction = new Auction("Leilão de Teste");
+        $auction->receiveAuctionBid(new AuctionBid(new User("Maria"), 1700));
+        $auction->receiveAuctionBid(new AuctionBid(new User("Maria"), 2000));
+        $auction->receiveAuctionBid(new AuctionBid(new User("Maria"), 2500));
+        $auction->receiveAuctionBid(new AuctionBid(new User("Maria"), 3500));
+        return [ $auction ];
+    }
+
+    private function auctionDesc(): array
+    {
+        $auction = new Auction("Leilão de Teste");
+        $auction->receiveAuctionBid(new AuctionBid(new User("Maria"), 3500));
+        $auction->receiveAuctionBid(new AuctionBid(new User("Maria"), 2500));
+        $auction->receiveAuctionBid(new AuctionBid(new User("Maria"), 2000));
+        $auction->receiveAuctionBid(new AuctionBid(new User("Maria"), 1700));
+        return [ $auction ];
+    }
+    
+    private function auctionRand(): array
     {
         $auction = new Auction("Leilão de Teste");
         $auction->receiveAuctionBid(new AuctionBid(new User("Maria"), 2000));
+        $auction->receiveAuctionBid(new AuctionBid(new User("Maria"), 1700));
+        $auction->receiveAuctionBid(new AuctionBid(new User("Maria"), 3500));
         $auction->receiveAuctionBid(new AuctionBid(new User("Maria"), 2500));
-
-        $evaluator = new Evaluator();
-        $evaluator->evaluate($auction);
-
-        self::assertEquals(2000, $evaluator->getLowerValue());
+        return [ $auction ];
     }
 }
