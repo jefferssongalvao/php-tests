@@ -2,6 +2,7 @@
 
 namespace PhpTest;
 
+use DomainException;
 use PhpTest\Model\Auction;
 use PhpTest\Model\AuctionBid;
 use PhpTest\Model\User;
@@ -14,6 +15,14 @@ class EvaluatorTest extends TestCase
     protected function setUp(): void
     {
         $this->evaluator = new Evaluator();
+    }
+
+    public function testEmptyAuctionCannotEvaluated(): void
+    {
+        $this->expectException(DomainException::class);
+
+        $auction = new Auction("Auction Empty");
+        $this->evaluator->evaluate($auction);
     }
 
     /**

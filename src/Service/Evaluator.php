@@ -2,6 +2,7 @@
 
 namespace PhpTest\Service;
 
+use DomainException;
 use PhpTest\Model\Auction;
 use PhpTest\Model\AuctionBid;
 
@@ -18,18 +19,21 @@ class Evaluator
         $this->lowerValue = INF;
         $this->highestAuctionBids = [];
     }
-    
+
     public function evaluate(Auction $auction): void
     {
+        if (empty($auction->getAuctionBids()))
+            throw new DomainException("Não é possível avaliar um leilão vazio");
+
         $auctionBids = $auction->getAuctionBids();
-        foreach($auctionBids as $auctionBid){
+        foreach ($auctionBids as $auctionBid) {
             $actualValue = $auctionBid->getValue();
-            if($actualValue > $this->highestValue)
+            if ($actualValue > $this->highestValue)
                 $this->highestValue = $actualValue;
-            if($actualValue < $this->lowerValue)
+            if ($actualValue < $this->lowerValue)
                 $this->lowerValue = $actualValue;
         }
-        usort($auctionBids, fn(AuctionBid $auctionBid1, AuctionBid $auctionBid2) => $auctionBid2->getValue() - $auctionBid1->getValue());
+        usort($auctionBids, fn (AuctionBid $auctionBid1, AuctionBid $auctionBid2) => $auctionBid2->getValue() - $auctionBid1->getValue());
 
         $this->highestAuctionBids = array_slice($auctionBids, 0, 3);
     }
@@ -38,12 +42,12 @@ class Evaluator
     {
         return $this->highestValue;
     }
-    
+
     public function getLowerValue(): float
     {
         return $this->lowerValue;
     }
-    
+
     /**
      *
      * @return AuctionBid[]
