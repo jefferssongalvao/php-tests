@@ -2,3 +2,4 @@
 vendor
 .phpunit.result.cache
 testes-executados.txt
+composer.lock
