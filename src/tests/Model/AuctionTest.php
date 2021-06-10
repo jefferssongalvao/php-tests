@@ -2,6 +2,7 @@
 
 namespace PhpTest\tests\Model;
 
+use DomainException;
 use PhpTest\Model\Auction;
 use PhpTest\Model\AuctionBid;
 use PhpTest\Model\User;
@@ -12,6 +13,8 @@ class AuctionTest extends TestCase
 
     public function testNotReceiveFiveBidsPerUser(): void
     {
+        $this->expectException(DomainException::class);
+
         $auction = new Auction("Auction Test");
 
         $user1 = new User("Maria");
@@ -29,26 +32,18 @@ class AuctionTest extends TestCase
         $auction->receiveAuctionBid(new AuctionBid($user2, 5500));
 
         $auction->receiveAuctionBid(new AuctionBid($user1, 6000));
-
-        $lastIdx = array_key_last($auction->getAuctionBids());
-        
-        self::assertCount(10, $auction->getAuctionBids());
-        self::assertEquals(5500, $auction->getAuctionBids()[$lastIdx]->getValue());
-
     }
 
     public function testNotReceiveRepeatBid(): void
     {
+        $this->expectException(DomainException::class);
         $auction = new Auction("Auction Text");
 
         $auction->receiveAuctionBid(new AuctionBid(new User("Maria"), 1000));
         $auction->receiveAuctionBid(new AuctionBid(new User("Maria"), 5000));
 
         $auctionBids = $auction->getAuctionBids();
-
-        self::assertCount(1, $auctionBids);
-        self::assertEquals(1000, $auctionBids[0]->getValue());
-    }    
+    }
 
     /**
      * @dataProvider generateBids
@@ -56,11 +51,11 @@ class AuctionTest extends TestCase
     public function testAuctionMustReceiveBids(
         int $numberOfBids,
         Auction $auction,
-        array $values ): void
-    {
+        array $values
+    ): void {
         self::assertInstanceOf(Auction::class, $auction);
         self::assertCount($numberOfBids, $auction->getAuctionBids());
-        foreach($values as $idx => $value)
+        foreach ($values as $idx => $value)
             self::assertEquals($value, $auction->getAuctionBids()[$idx]->getValue());
     }
 

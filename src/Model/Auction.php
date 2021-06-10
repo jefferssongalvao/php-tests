@@ -2,6 +2,8 @@
 
 namespace PhpTest\Model;
 
+use DomainException;
+
 class Auction
 {
     /** @var AuctionBid[] */
@@ -17,8 +19,16 @@ class Auction
     public function receiveAuctionBid(AuctionBid $auctionBid): void
     {
         $totalBidsUser = $this->totalAuctionBidsUser($auctionBid->getUser());
-        if (empty($this->auctionBids) || ($this->isNotLastUser($auctionBid) && $totalBidsUser < 5))
-            $this->auctionBids[] = $auctionBid;
+        if (!empty($this->auctionBids)) {
+            if ($this->isFromLastUser($auctionBid)) {
+                throw new DomainException("Um usuário não pode dar dois lances seguidos");
+            }
+
+            if ($totalBidsUser == 5) {
+                throw new DomainException("Um usuário não pode dar mais de 5 lances");
+            }
+        }
+        $this->auctionBids[] = $auctionBid;
     }
 
     /**
@@ -35,12 +45,12 @@ class Auction
         return $this->description;
     }
 
-    private function isNotLastUser(AuctionBid $auctionBid): bool
+    private function isFromLastUser(AuctionBid $auctionBid): bool
     {
         $lastIdx = array_key_last($this->auctionBids);
         $lastAuctionBid = $this->auctionBids[$lastIdx];
 
-        return $auctionBid->getUser() != $lastAuctionBid->getUser();
+        return $auctionBid->getUser() == $lastAuctionBid->getUser();
     }
 
     private function totalAuctionBidsUser(User $user): int
