@@ -22,6 +22,9 @@ class Evaluator
 
     public function evaluate(Auction $auction): void
     {
+        if ($auction->isFinished())
+            throw new DomainException("Leilão já finalizado");
+
         if (empty($auction->getAuctionBids()))
             throw new DomainException("Não é possível avaliar um leilão vazio");
 

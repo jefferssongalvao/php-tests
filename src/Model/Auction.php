@@ -9,11 +9,13 @@ class Auction
     /** @var AuctionBid[] */
     private $auctionBids;
     private string $description;
+    private bool $isFinished;
 
     public function __construct(string $description)
     {
         $this->description = $description;
         $this->auctionBids = [];
+        $this->isFinished = false;
     }
 
     public function receiveAuctionBid(AuctionBid $auctionBid): void
@@ -29,6 +31,11 @@ class Auction
             }
         }
         $this->auctionBids[] = $auctionBid;
+    }
+
+    public function finished(): void
+    {
+        $this->isFinished = true;
     }
 
     /**
@@ -64,5 +71,10 @@ class Auction
             },
             0
         );
+    }
+
+    public function isFinished()
+    {
+        return $this->isFinished;
     }
 }

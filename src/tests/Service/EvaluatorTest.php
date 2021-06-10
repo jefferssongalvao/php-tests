@@ -17,6 +17,16 @@ class EvaluatorTest extends TestCase
         $this->evaluator = new Evaluator();
     }
 
+    public function testAuctionFinishedNotEvaluated(): void
+    {
+        $this->expectException(DomainException::class);
+
+        $auction = new Auction("Auction Finished");
+        $auction->finished();
+
+        $this->evaluator->evaluate($auction);
+    }
+
     public function testEmptyAuctionCannotEvaluated(): void
     {
         $this->expectException(DomainException::class);
