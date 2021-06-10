@@ -9,7 +9,7 @@ use PhpTest\Service\Evaluator;
 use PHPUnit\Framework\TestCase;
 
 class EvaluatorTest extends TestCase
-{    
+{
     private Evaluator $evaluator;
     protected function setUp(): void
     {
@@ -25,7 +25,7 @@ class EvaluatorTest extends TestCase
 
         self::assertEquals(3500, $this->evaluator->getHighestValue());
     }
-    
+
     /**
      * @dataProvider getAuctions
      */
@@ -35,7 +35,7 @@ class EvaluatorTest extends TestCase
 
         self::assertEquals(1700, $this->evaluator->getLowerValue());
     }
-    
+
     /**
      * @dataProvider getAuctions
      */
@@ -62,31 +62,31 @@ class EvaluatorTest extends TestCase
 
     private function auctionAsc(): array
     {
-        $auction = new Auction("Leilão de Teste");
-        $auction->receiveAuctionBid(new AuctionBid(new User("Maria"), 1700));
-        $auction->receiveAuctionBid(new AuctionBid(new User("Maria"), 2000));
-        $auction->receiveAuctionBid(new AuctionBid(new User("Maria"), 2500));
-        $auction->receiveAuctionBid(new AuctionBid(new User("Maria"), 3500));
-        return [ $auction ];
+        $auction = new Auction("Auction Text");
+        $auction->receiveAuctionBid(new AuctionBid(new User("Mary"), 1700));
+        $auction->receiveAuctionBid(new AuctionBid(new User("Joseph"), 2000));
+        $auction->receiveAuctionBid(new AuctionBid(new User("John"), 2500));
+        $auction->receiveAuctionBid(new AuctionBid(new User("Mary"), 3500));
+        return [$auction];
     }
 
     private function auctionDesc(): array
     {
-        $auction = new Auction("Leilão de Teste");
-        $auction->receiveAuctionBid(new AuctionBid(new User("Maria"), 3500));
-        $auction->receiveAuctionBid(new AuctionBid(new User("Maria"), 2500));
-        $auction->receiveAuctionBid(new AuctionBid(new User("Maria"), 2000));
-        $auction->receiveAuctionBid(new AuctionBid(new User("Maria"), 1700));
-        return [ $auction ];
+        $auction = new Auction("Auction Text");
+        $auction->receiveAuctionBid(new AuctionBid(new User("Mary"), 3500));
+        $auction->receiveAuctionBid(new AuctionBid(new User("John"), 2500));
+        $auction->receiveAuctionBid(new AuctionBid(new User("Joseph"), 2000));
+        $auction->receiveAuctionBid(new AuctionBid(new User("Mary"), 1700));
+        return [$auction];
     }
-    
+
     private function auctionRand(): array
     {
-        $auction = new Auction("Leilão de Teste");
-        $auction->receiveAuctionBid(new AuctionBid(new User("Maria"), 2000));
-        $auction->receiveAuctionBid(new AuctionBid(new User("Maria"), 1700));
-        $auction->receiveAuctionBid(new AuctionBid(new User("Maria"), 3500));
-        $auction->receiveAuctionBid(new AuctionBid(new User("Maria"), 2500));
-        return [ $auction ];
+        $auction = new Auction("Auction Text");
+        $auction->receiveAuctionBid(new AuctionBid(new User("Joseph"), 2000));
+        $auction->receiveAuctionBid(new AuctionBid(new User("Mary"), 3500));
+        $auction->receiveAuctionBid(new AuctionBid(new User("John"), 2500));
+        $auction->receiveAuctionBid(new AuctionBid(new User("Mary"), 1700));
+        return [$auction];
     }
 }
