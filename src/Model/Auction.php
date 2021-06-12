@@ -2,20 +2,26 @@
 
 namespace PhpTest\Model;
 
+use DateTimeImmutable;
+use DateTimeInterface;
 use DomainException;
 
 class Auction
 {
-    /** @var AuctionBid[] */
-    private $auctionBids;
+    private int $id;
     private string $description;
     private bool $isFinished;
+    private DateTimeInterface $createdAt;
+    /** @var AuctionBid[] */
+    private $auctionBids;
 
-    public function __construct(string $description)
+    public function __construct(string $description, DateTimeImmutable $createdAt = null, int $id = null)
     {
         $this->description = $description;
         $this->auctionBids = [];
         $this->isFinished = false;
+        $this->createdAt = $createdAt ?? new \DateTimeImmutable();
+        $this->id = $id;
     }
 
     public function receiveAuctionBid(AuctionBid $auctionBid): void
@@ -33,7 +39,7 @@ class Auction
         $this->auctionBids[] = $auctionBid;
     }
 
-    public function finished(): void
+    public function finish(): void
     {
         $this->isFinished = true;
     }
@@ -76,5 +82,23 @@ class Auction
     public function isFinished()
     {
         return $this->isFinished;
+    }
+
+    public function getCreatedAt(): DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function hasMoreThanOneWeek(): bool
+    {
+        $today = new \DateTime();
+        $interval = $this->createdAt->diff($today);
+
+        return $interval->days > 7;
     }
 }

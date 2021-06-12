@@ -22,7 +22,7 @@ class EvaluatorTest extends TestCase
         $this->expectException(DomainException::class);
 
         $auction = new Auction("Auction Finished");
-        $auction->finished();
+        $auction->finish();
 
         $this->evaluator->evaluate($auction);
     }
