@@ -15,13 +15,13 @@ class Auction
     /** @var AuctionBid[] */
     private $auctionBids;
 
-    public function __construct(string $description, DateTimeImmutable $createdAt = null, int $id = null)
+    public function __construct(string $description, DateTimeImmutable $createdAt = null, ?int $id = null)
     {
         $this->description = $description;
         $this->auctionBids = [];
         $this->isFinished = false;
         $this->createdAt = $createdAt ?? new \DateTimeImmutable();
-        $this->id = $id;
+        $this->id = $id ? $id : 0;
     }
 
     public function receiveAuctionBid(AuctionBid $auctionBid): void
@@ -79,7 +79,7 @@ class Auction
         );
     }
 
-    public function isFinished()
+    public function isFinished(): bool
     {
         return $this->isFinished;
     }

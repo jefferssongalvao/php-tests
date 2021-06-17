@@ -6,15 +6,20 @@ use PhpTest\Dao\Auction;
 
 class Finisher
 {
+    private Auction $auctionDao;
+
+    public function __construct(Auction $auctionDao)
+    {
+        $this->auctionDao = $auctionDao;
+    }
+
     public function finish()
     {
-        $dao = new Auction();
-        $auctions = $dao->recoverUnfinished();
-
+        $auctions = $this->auctionDao->recoverUnfinished();
         foreach ($auctions as $auction) {
             if ($auction->hasMoreThanOneWeek()) {
                 $auction->finish();
-                $dao->update($auction);
+                $this->auctionDao->update($auction);
             }
         }
     }

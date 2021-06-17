@@ -2,6 +2,7 @@
 
 namespace PhpTest\tests\Model;
 
+use DateTimeImmutable;
 use DomainException;
 use PhpTest\Model\Auction;
 use PhpTest\Model\AuctionBid;

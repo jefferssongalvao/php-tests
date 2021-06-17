@@ -64,10 +64,10 @@ class Auction
 
     public function update(ModelAuction $auction)
     {
-        $sql = 'UPDATE auctions SET description = :description, created_at = :createdAt, finished = :finished WHERE id = :id';
+        $sql = 'UPDATE auctions SET description = :description, created_at = :created_at, finished = :finished WHERE id = :id';
         $stm = $this->con->prepare($sql);
         $stm->bindValue(':description', $auction->getDescription());
-        $stm->bindValue(':createdAt', $auction->getCreatedAt()->format('Y-m-d'));
+        $stm->bindValue(':created_at', $auction->getCreatedAt()->format('Y-m-d'));
         $stm->bindValue(':finished', $auction->isFinished(), \PDO::PARAM_BOOL);
         $stm->bindValue(':id', $auction->getId(), \PDO::PARAM_INT);
         $stm->execute();
