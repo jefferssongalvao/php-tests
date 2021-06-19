@@ -6,10 +6,22 @@ use DomainException;
 use PhpTest\Model\Auction;
 use PhpTest\Model\AuctionBid;
 use PhpTest\Model\User;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class AuctionTest extends TestCase
 {
+    /** @var MockObject */
+    private User $maryUser;
+    /** @var MockObject */
+    private User $josephUser;
+
+    protected function setUp(): void
+    {
+        $this->maryUser = $this->getMockBuilder(User::class)->setConstructorArgs(["Mary"])->getMock();
+        $this->josephUser = $this->getMockBuilder(User::class)->setConstructorArgs(["Joseph"])->getMock();
+    }
+
 
     public function testNotReceiveFiveBidsPerUser(): void
     {
@@ -17,21 +29,18 @@ class AuctionTest extends TestCase
 
         $auction = new Auction("Auction Test");
 
-        $maryUser = new User("Mary");
-        $joseph = new User("Joseph");
+        $auction->receiveAuctionBid(new AuctionBid($this->maryUser, 1000));
+        $auction->receiveAuctionBid(new AuctionBid($this->josephUser, 1500));
+        $auction->receiveAuctionBid(new AuctionBid($this->maryUser, 2000));
+        $auction->receiveAuctionBid(new AuctionBid($this->josephUser, 2500));
+        $auction->receiveAuctionBid(new AuctionBid($this->maryUser, 3000));
+        $auction->receiveAuctionBid(new AuctionBid($this->josephUser, 3500));
+        $auction->receiveAuctionBid(new AuctionBid($this->maryUser, 4000));
+        $auction->receiveAuctionBid(new AuctionBid($this->josephUser, 4500));
+        $auction->receiveAuctionBid(new AuctionBid($this->maryUser, 5000));
+        $auction->receiveAuctionBid(new AuctionBid($this->josephUser, 5500));
 
-        $auction->receiveAuctionBid(new AuctionBid($maryUser, 1000));
-        $auction->receiveAuctionBid(new AuctionBid($joseph, 1500));
-        $auction->receiveAuctionBid(new AuctionBid($maryUser, 2000));
-        $auction->receiveAuctionBid(new AuctionBid($joseph, 2500));
-        $auction->receiveAuctionBid(new AuctionBid($maryUser, 3000));
-        $auction->receiveAuctionBid(new AuctionBid($joseph, 3500));
-        $auction->receiveAuctionBid(new AuctionBid($maryUser, 4000));
-        $auction->receiveAuctionBid(new AuctionBid($joseph, 4500));
-        $auction->receiveAuctionBid(new AuctionBid($maryUser, 5000));
-        $auction->receiveAuctionBid(new AuctionBid($joseph, 5500));
-
-        $auction->receiveAuctionBid(new AuctionBid($maryUser, 6000));
+        $auction->receiveAuctionBid(new AuctionBid($this->maryUser, 6000));
     }
 
     public function testNotReceiveRepeatBid(): void
@@ -39,8 +48,8 @@ class AuctionTest extends TestCase
         $this->expectException(DomainException::class);
         $auction = new Auction("Auction Text");
 
-        $auction->receiveAuctionBid(new AuctionBid(new User("Mary"), 1000));
-        $auction->receiveAuctionBid(new AuctionBid(new User("Mary"), 5000));
+        $auction->receiveAuctionBid(new AuctionBid($this->maryUser, 1000));
+        $auction->receiveAuctionBid(new AuctionBid($this->maryUser, 5000));
 
         $auctionBids = $auction->getAuctionBids();
     }
@@ -61,12 +70,18 @@ class AuctionTest extends TestCase
 
     public function generateBids(): array
     {
+        /** @var User */
+        $maryUser = $this->getMockBuilder(User::class)->setConstructorArgs(["Mary"])->getMock();
+        /** @var User */
+        $josephUser = $this->getMockBuilder(User::class)->setConstructorArgs(["Joseph"])->getMock();
+
         $auctionOneBid = new Auction("Auction Text");
-        $auctionOneBid->receiveAuctionBid(new AuctionBid(new User("Mary"), 1700));
+
+        $auctionOneBid->receiveAuctionBid(new AuctionBid($maryUser, 1700));
 
         $auctionTwoBids = new Auction("Auction Text");
-        $auctionTwoBids->receiveAuctionBid(new AuctionBid(new User("Mary"), 1700));
-        $auctionTwoBids->receiveAuctionBid(new AuctionBid(new User("Joseph"), 2000));
+        $auctionTwoBids->receiveAuctionBid(new AuctionBid($maryUser, 1700));
+        $auctionTwoBids->receiveAuctionBid(new AuctionBid($josephUser, 2000));
 
         return [
             "one-bid" => [1, $auctionOneBid, [1700]],
