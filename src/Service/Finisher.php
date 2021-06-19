@@ -16,6 +16,7 @@ class Finisher
     public function finish()
     {
         $auctions = $this->auctionDao->recoverUnfinished();
+
         foreach ($auctions as $auction) {
             if ($auction->hasMoreThanOneWeek()) {
                 $auction->finish();

@@ -2,6 +2,7 @@
 
 namespace PhpTest\Dao;
 
+use PDO;
 use PhpTest\Infra\ConnectionCreator;
 use PhpTest\Model\Auction as ModelAuction;
 
@@ -9,9 +10,9 @@ class Auction
 {
     private $con;
 
-    public function __construct()
+    public function __construct(PDO $con)
     {
-        $this->con = ConnectionCreator::getConnection();
+        $this->con = $con;
     }
 
     public function save(ModelAuction $auction): void

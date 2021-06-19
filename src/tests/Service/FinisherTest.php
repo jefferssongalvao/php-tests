@@ -3,16 +3,15 @@
 namespace PhpTest\tests\Service;
 
 use DateTimeImmutable;
+use PhpTest\Dao\Auction as DaoAuction;
 use PhpTest\Model\Auction;
 use PhpTest\Service\Finisher;
-use PhpTest\tests\Service\MockTest\AuctionDaoMock;
 use PHPUnit\Framework\TestCase;
 
 class FinisherTest extends TestCase
 {
     public function testAuctionMoreThanOneWeekMustBeFinished(): void
     {
-
         $auction1 = new Auction(
             "Auction Test 1",
             new DateTimeImmutable("8 days ago")
@@ -22,15 +21,20 @@ class FinisherTest extends TestCase
             new DateTimeImmutable("10 days ago")
         );
 
-        $auctionDao = new AuctionDaoMock();
-        $auctionDao->save($auction1);
-        $auctionDao->save($auction2);
+        $auctionDao = $this->createMock(DaoAuction::class);
+        $auctionDao->method("recoverUnfinished")
+            ->willReturn([$auction1, $auction2]);
+
+
+        /** @var DaoAuction */
+        $auctionDao = $auctionDao;
 
         $finisher = new Finisher($auctionDao);
         $finisher->finish();
 
-        $auctionsFinished = $auctionDao->recoverFinished();
-
+        $auctionsFinished = [$auction1, $auction2];
         self::assertCount(2, $auctionsFinished);
+        self::assertTrue($auctionsFinished[0]->isFinished());
+        self::assertTrue($auctionsFinished[1]->isFinished());
     }
 }

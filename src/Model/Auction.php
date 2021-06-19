@@ -18,8 +18,8 @@ class Auction
     public function __construct(string $description, DateTimeImmutable $createdAt = null, ?int $id = null)
     {
         $this->description = $description;
-        $this->auctionBids = [];
         $this->isFinished = false;
+        $this->auctionBids = [];
         $this->createdAt = $createdAt ?? new \DateTimeImmutable();
         $this->id = $id ? $id : 0;
     }
