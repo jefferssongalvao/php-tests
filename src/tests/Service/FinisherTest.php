@@ -12,18 +12,18 @@ class FinisherTest extends TestCase
 {
     public function testAuctionMoreThanOneWeekMustBeFinished(): void
     {
-        $auction1 = new Auction(
-            "Auction Test 1",
+        $threeBedroomHouse = new Auction(
+            "Three Bedroom House",
             new DateTimeImmutable("8 days ago")
         );
-        $auction2 = new Auction(
-            "Auction Test 2",
+        $bigApartment = new Auction(
+            "Big Apartment",
             new DateTimeImmutable("10 days ago")
         );
 
         $auctionDao = $this->createMock(DaoAuction::class);
         $auctionDao->method("recoverUnfinished")
-            ->willReturn([$auction1, $auction2]);
+            ->willReturn([$threeBedroomHouse, $bigApartment]);
 
 
         /** @var DaoAuction */
@@ -32,7 +32,7 @@ class FinisherTest extends TestCase
         $finisher = new Finisher($auctionDao);
         $finisher->finish();
 
-        $auctionsFinished = [$auction1, $auction2];
+        $auctionsFinished = [$threeBedroomHouse, $bigApartment];
         self::assertCount(2, $auctionsFinished);
         self::assertTrue($auctionsFinished[0]->isFinished());
         self::assertTrue($auctionsFinished[1]->isFinished());
