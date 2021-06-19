@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpTest;
+namespace PhpTest\tests\Unit\Service;
 
 use DomainException;
 use PhpTest\Model\Auction;

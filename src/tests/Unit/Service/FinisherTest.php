@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpTest\tests\Service;
+namespace PhpTest\tests\Unit\Service;
 
 use DateTimeImmutable;
 use DomainException;
