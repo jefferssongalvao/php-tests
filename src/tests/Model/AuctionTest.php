@@ -2,7 +2,6 @@
 
 namespace PhpTest\tests\Model;
 
-use DateTimeImmutable;
 use DomainException;
 use PhpTest\Model\Auction;
 use PhpTest\Model\AuctionBid;
@@ -18,21 +17,21 @@ class AuctionTest extends TestCase
 
         $auction = new Auction("Auction Test");
 
-        $user1 = new User("Maria");
-        $user2 = new User("José");
+        $maryUser = new User("Mary");
+        $joseph = new User("Joseph");
 
-        $auction->receiveAuctionBid(new AuctionBid($user1, 1000));
-        $auction->receiveAuctionBid(new AuctionBid($user2, 1500));
-        $auction->receiveAuctionBid(new AuctionBid($user1, 2000));
-        $auction->receiveAuctionBid(new AuctionBid($user2, 2500));
-        $auction->receiveAuctionBid(new AuctionBid($user1, 3000));
-        $auction->receiveAuctionBid(new AuctionBid($user2, 3500));
-        $auction->receiveAuctionBid(new AuctionBid($user1, 4000));
-        $auction->receiveAuctionBid(new AuctionBid($user2, 4500));
-        $auction->receiveAuctionBid(new AuctionBid($user1, 5000));
-        $auction->receiveAuctionBid(new AuctionBid($user2, 5500));
+        $auction->receiveAuctionBid(new AuctionBid($maryUser, 1000));
+        $auction->receiveAuctionBid(new AuctionBid($joseph, 1500));
+        $auction->receiveAuctionBid(new AuctionBid($maryUser, 2000));
+        $auction->receiveAuctionBid(new AuctionBid($joseph, 2500));
+        $auction->receiveAuctionBid(new AuctionBid($maryUser, 3000));
+        $auction->receiveAuctionBid(new AuctionBid($joseph, 3500));
+        $auction->receiveAuctionBid(new AuctionBid($maryUser, 4000));
+        $auction->receiveAuctionBid(new AuctionBid($joseph, 4500));
+        $auction->receiveAuctionBid(new AuctionBid($maryUser, 5000));
+        $auction->receiveAuctionBid(new AuctionBid($joseph, 5500));
 
-        $auction->receiveAuctionBid(new AuctionBid($user1, 6000));
+        $auction->receiveAuctionBid(new AuctionBid($maryUser, 6000));
     }
 
     public function testNotReceiveRepeatBid(): void
@@ -40,8 +39,8 @@ class AuctionTest extends TestCase
         $this->expectException(DomainException::class);
         $auction = new Auction("Auction Text");
 
-        $auction->receiveAuctionBid(new AuctionBid(new User("Maria"), 1000));
-        $auction->receiveAuctionBid(new AuctionBid(new User("Maria"), 5000));
+        $auction->receiveAuctionBid(new AuctionBid(new User("Mary"), 1000));
+        $auction->receiveAuctionBid(new AuctionBid(new User("Mary"), 5000));
 
         $auctionBids = $auction->getAuctionBids();
     }
@@ -63,11 +62,11 @@ class AuctionTest extends TestCase
     public function generateBids(): array
     {
         $auctionOneBid = new Auction("Auction Text");
-        $auctionOneBid->receiveAuctionBid(new AuctionBid(new User("Maria"), 1700));
+        $auctionOneBid->receiveAuctionBid(new AuctionBid(new User("Mary"), 1700));
 
         $auctionTwoBids = new Auction("Auction Text");
-        $auctionTwoBids->receiveAuctionBid(new AuctionBid(new User("Maria"), 1700));
-        $auctionTwoBids->receiveAuctionBid(new AuctionBid(new User("José"), 2000));
+        $auctionTwoBids->receiveAuctionBid(new AuctionBid(new User("Mary"), 1700));
+        $auctionTwoBids->receiveAuctionBid(new AuctionBid(new User("Joseph"), 2000));
 
         return [
             "one-bid" => [1, $auctionOneBid, [1700]],

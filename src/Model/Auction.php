@@ -29,11 +29,11 @@ class Auction
         $totalBidsUser = $this->totalAuctionBidsUser($auctionBid->getUser());
         if (!empty($this->auctionBids)) {
             if ($this->isFromLastUser($auctionBid)) {
-                throw new DomainException("Um usuário não pode dar dois lances seguidos");
+                throw new DomainException("A user cannot bid twice in a row.");
             }
 
             if ($totalBidsUser == 5) {
-                throw new DomainException("Um usuário não pode dar mais de 5 lances");
+                throw new DomainException("A user cannot place more than 5 bids.");
             }
         }
         $this->auctionBids[] = $auctionBid;
