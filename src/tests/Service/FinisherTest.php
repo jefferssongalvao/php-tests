@@ -30,6 +30,7 @@ class FinisherTest extends TestCase
             new DateTimeImmutable("10 days ago")
         );
 
+        /** @var MockObject */
         $auctionDao = $this->createMock(DaoAuction::class);
         $auctionDao->method("recoverUnfinished")
             ->willReturn([$this->threeBedroomHouse, $this->bigApartment]);
@@ -47,9 +48,9 @@ class FinisherTest extends TestCase
         $this->finisher->finish();
         $auctionsFinished = [$this->threeBedroomHouse, $this->bigApartment];
 
-        self::assertCount(2, $auctionsFinished);
-        self::assertTrue($auctionsFinished[0]->isFinished());
-        self::assertTrue($auctionsFinished[1]->isFinished());
+        static::assertCount(2, $auctionsFinished);
+        static::assertTrue($auctionsFinished[0]->isFinished());
+        static::assertTrue($auctionsFinished[1]->isFinished());
     }
 
     public function testMustContinueToSendEmailWhenItEncountersSendingFailure(): void
@@ -58,6 +59,16 @@ class FinisherTest extends TestCase
             ->method("notifyAuctionFinishing")
             ->willThrowException(new DomainException("Failed to send email"));
 
+        $this->finisher->finish();
+    }
+
+    public function shouldOnlySendAuctionAfterFinished(): void
+    {
+        $this->senderMail->expects($this->exactly(2))
+            ->method("notifyAuctionFinishing")
+            ->willReturnCallback(
+                fn (Auction $auction) => static::assertTrue($auction->isFinished())
+            );
         $this->finisher->finish();
     }
 }
