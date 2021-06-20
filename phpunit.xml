@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.5/phpunit.xsd"
-    bootstrap="vendor/autoload.php"
-    colors="true">
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.5/phpunit.xsd" bootstrap="vendor/autoload.php" colors="true">
     <testsuites>
         <testsuite name="unit">
-            <directory suffix="Test.php">./src/tests</directory>
+            <directory suffix="Test.php">./src/tests/Unit</directory>
+        </testsuite>
+        <testsuite name="integration">
+            <directory suffix="Test.php">./src/tests/Integration</directory>
         </testsuite>
     </testsuites>
-    <logging>
+    <!-- <logging>
         <log type="testdox-text" target="testes-executados.txt"/>
-    </logging>
+    </logging> -->
 </phpunit>

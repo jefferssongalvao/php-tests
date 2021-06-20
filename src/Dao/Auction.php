@@ -15,7 +15,7 @@ class Auction
         $this->con = $con;
     }
 
-    public function save(ModelAuction $auction): void
+    public function save(ModelAuction $auction): ModelAuction
     {
         $sql = 'INSERT INTO auctions (description, finished, created_at) VALUES (?, ?, ?)';
         $stm = $this->con->prepare($sql);
@@ -23,6 +23,12 @@ class Auction
         $stm->bindValue(2, $auction->isFinished(), \PDO::PARAM_BOOL);
         $stm->bindValue(3, $auction->getCreatedAt()->format('Y-m-d'));
         $stm->execute();
+
+        return new ModelAuction(
+            $auction->getDescription(),
+            $auction->getCreatedAt(),
+            $this->con->lastInsertId()
+        );
     }
 
     /**

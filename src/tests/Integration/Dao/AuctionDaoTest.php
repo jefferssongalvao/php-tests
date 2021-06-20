@@ -7,6 +7,8 @@ use PhpTest\Dao\Auction as DaoAuction;
 use PhpTest\Model\Auction;
 use PHPUnit\Framework\TestCase;
 
+use function PHPUnit\Framework\assertFalse;
+
 class AuctionDaoTest extends TestCase
 {
     private static PDO $pdo;
@@ -42,6 +44,31 @@ class AuctionDaoTest extends TestCase
         static::assertCount(1, $auctions);
         static::assertContainsOnlyInstancesOf(Auction::class, $auctions);
         static::assertSame("Auction Test Unfinished", $auctions[0]->getDescription());
+        static::assertFalse($auctions[0]->isFinished());
+    }
+
+    /**
+     *
+     * @dataProvider getAuctions
+     * @param Auction[] $auctions
+     */
+    public function testWhenUpdatingAuctionTheStatusMustBeChanged(array $auctions): void
+    {
+        $auction = $auctions[0];
+        $auction = $this->auctionDao->save($auction);
+
+        $auctions = $this->auctionDao->recoverUnfinished();
+        static::assertCount(1, $auctions);
+        static::assertSame("Auction Test Unfinished", $auctions[0]->getDescription());
+        static::assertFalse($auctions[0]->isFinished());
+
+        $auction->finish();
+        $this->auctionDao->update($auction);
+
+        $auctions = $this->auctionDao->recoverFinished();
+        static::assertCount(1, $auctions);
+        static::assertSame("Auction Test Unfinished", $auctions[0]->getDescription());
+        static::assertTrue($auctions[0]->isFinished());
     }
 
     /**
@@ -57,6 +84,7 @@ class AuctionDaoTest extends TestCase
         static::assertCount(1, $auctions);
         static::assertContainsOnlyInstancesOf(Auction::class, $auctions);
         static::assertSame("Auction Test Finished", $auctions[0]->getDescription());
+        static::assertTrue($auctions[0]->isFinished());
     }
 
     protected function tearDown(): void
