@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpTest\tests\Integration\Api;
+namespace PhpTest\Tests\Integration\Api;
 
 use PHPUnit\Framework\TestCase;
 

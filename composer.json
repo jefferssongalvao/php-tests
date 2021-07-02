@@ -4,6 +4,11 @@
             "PhpTest\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "PhpTest\\Tests\\": "tests/"
+        }
+    },
     "require": {
         "php": "^7.4",
         "ext-pdo": "*"

@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpTest\tests\Integration\Dao;
+namespace PhpTest\Tests\Integration\Dao;
 
 use PDO;
 use PhpTest\Dao\Auction as DaoAuction;
